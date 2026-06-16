@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ===========================================================
+   Sehar Beauty Salon — Luxury Design System
+   Theme: Premium Pink · Black · Gold
+   =========================================================== */
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Brand palette */
+  --color-ink: #0c0a0a;
+  --color-ink-soft: #1a1614;
+  --color-ink-muted: #2a2422;
+
+  --color-pink-50: #fff1f6;
+  --color-pink-100: #ffd6e6;
+  --color-pink-200: #ffb3d1;
+  --color-pink-300: #ff8fbb;
+  --color-pink-400: #f76aa0;
+  --color-pink-500: #ec4f8c;
+  --color-pink-600: #d6336c;
+
+  --color-gold-100: #f7ecc7;
+  --color-gold-200: #f0dd9b;
+  --color-gold-300: #e6c668;
+  --color-gold-400: #d4af37;
+  --color-gold-500: #b8932b;
+
+  --color-cream: #fdf8f4;
+
+  /* Semantic */
+  --color-background: #fdf8f4;
+  --color-foreground: #1a1614;
+
+  /* Fonts */
+  --font-serif: var(--font-playfair);
+  --font-sans: var(--font-poppins);
+
+  /* Animations */
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-shimmer: shimmer 3s linear infinite;
+  --animate-fade-up: fadeUp 0.7s ease forwards;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-14px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Gold gradient text */
+.text-gold-gradient {
+  background: linear-gradient(90deg, #b8932b 0%, #f0dd9b 35%, #d4af37 60%, #f7ecc7 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Scroll-reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(36px);
+  transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Thin elegant scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: #1a1614; }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(#d4af37, #d6336c);
+  border-radius: 9999px;
+}
+
+/* Decorative gold divider */
+.gold-divider {
+  width: 90px;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #d4af37, transparent);
 }
