@@ -1,5 +1,4 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { getJSON, setJSON } from "./storage";
 import {
   SERVICES,
   GALLERY,
@@ -34,9 +33,6 @@ export type ContentData = {
 };
 
 export type ContentSection = keyof ContentData;
-
-const DATA_DIR = path.join(process.cwd(), "data");
-const CONTENT_FILE = path.join(DATA_DIR, "content.json");
 
 /** Defaults come from data.ts — used to seed the editable store on first run. */
 export function defaultContent(): ContentData {
@@ -79,18 +75,12 @@ export async function getServicePage(
 /** Read editable content, merged over defaults so missing keys never break pages. */
 export async function getContent(): Promise<ContentData> {
   const base = defaultContent();
-  try {
-    const raw = await fs.readFile(CONTENT_FILE, "utf-8");
-    const stored = JSON.parse(raw) as Partial<ContentData>;
-    return { ...base, ...stored };
-  } catch {
-    return base;
-  }
+  const stored = await getJSON<Partial<ContentData> | null>("content", null);
+  return stored ? { ...base, ...stored } : base;
 }
 
 export async function writeContent(content: ContentData): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(CONTENT_FILE, JSON.stringify(content, null, 2), "utf-8");
+  await setJSON("content", content);
 }
 
 /** Replace a single section and persist. */

@@ -1,19 +1,17 @@
 import { NextResponse } from "next/server";
-import { promises as fs } from "fs";
-import path from "path";
 import { isAuthorized } from "@/lib/bookings";
+import { saveImage } from "@/lib/storage";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
 const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"];
 const MAX_BYTES = 5 * 1024 * 1024; // 5 MB
 
 function safeName(original: string): string {
-  const ext = (path.extname(original) || ".jpg").toLowerCase();
-  const base = path
-    .basename(original, path.extname(original))
+  const dot = original.lastIndexOf(".");
+  const ext = (dot >= 0 ? original.slice(dot) : ".jpg").toLowerCase();
+  const base = (dot >= 0 ? original.slice(0, dot) : original)
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
@@ -51,11 +49,10 @@ export async function POST(req: Request) {
   }
 
   try {
-    await fs.mkdir(UPLOAD_DIR, { recursive: true });
     const filename = safeName(file.name);
     const bytes = Buffer.from(await file.arrayBuffer());
-    await fs.writeFile(path.join(UPLOAD_DIR, filename), bytes);
-    return NextResponse.json({ success: true, url: `/uploads/${filename}` });
+    const url = await saveImage(filename, bytes, file.type);
+    return NextResponse.json({ success: true, url });
   } catch (err) {
     console.error("Upload failed:", err);
     return NextResponse.json(

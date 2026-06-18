@@ -1,5 +1,4 @@
-import { promises as fs } from "fs";
-import path from "path";
+import { getJSON, setJSON } from "./storage";
 
 export type BookingStatus = "pending" | "confirmed" | "done" | "cancelled";
 
@@ -16,21 +15,12 @@ export type Booking = {
   createdAt: string;
 };
 
-const DATA_DIR = path.join(process.cwd(), "data");
-const DATA_FILE = path.join(DATA_DIR, "bookings.json");
-
 export async function readBookings(): Promise<Booking[]> {
-  try {
-    const raw = await fs.readFile(DATA_FILE, "utf-8");
-    return JSON.parse(raw) as Booking[];
-  } catch {
-    return [];
-  }
+  return getJSON<Booking[]>("bookings", []);
 }
 
 export async function writeBookings(bookings: Booking[]): Promise<void> {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.writeFile(DATA_FILE, JSON.stringify(bookings, null, 2), "utf-8");
+  await setJSON("bookings", bookings);
 }
 
 /** Simple id generator (no external deps, avoids Math.random in app code). */
