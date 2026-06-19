@@ -2,16 +2,10 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   images: {
+    // Allow images from any host so pasted image links (from any site) render.
     remotePatterns: [
-      {
-        protocol: "https",
-        hostname: "images.unsplash.com",
-      },
-      {
-        // Vercel Blob public URLs (uploaded images in production)
-        protocol: "https",
-        hostname: "**.public.blob.vercel-storage.com",
-      },
+      { protocol: "https", hostname: "**" },
+      { protocol: "http", hostname: "**" },
     ],
   },
   compress: true,
